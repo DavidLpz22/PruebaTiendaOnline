@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Solicitud de Pedido</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Nombre del Cliente</label>
+    <input type="text" name="cliente_nombre" required class="form-control">
+
+    <label>Email</label>
+    <input type="email" name="cliente_email" class="form-control">
+
+    <label>Teléfono</label>
+    <input type="text" name="cliente_telefono" class="form-control">
+
+    <label>Red social (Instagram, Facebook, etc)</label>
+    <input type="text" name="cliente_red_social" class="form-control">
+
+    <label>Producto de referencia (Opcional)</label>
+
+    <select name="producto_referencia" class="form-control">
+        <option value="">-- Ninguno --</option>
+        {% for producto in productos %}
+            {% if producto_seleccionado and producto.id == producto_seleccionado.id %}
+                <option value="{{ producto.id }}" selected>{{ producto.nombre }}</option>
+            {% else %}
+                <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+
+    <label>Descripción del Pedido</label>
+    <textarea name="descripcion" class="form-control" required></textarea>
+
+    <label>Fecha solicitada (opcional)</label>
+    <input type="date" name="fecha_solicitada" class="form-control">
+
+    <label>Imágenes de referencia</label>
+    <input type="file" name="imagenes" multiple class="form-control">
+
+    <br>
+    <button class="btn btn-primary" type="submit">Enviar Solicitud</button>
+</form>
+
+{% endblock %}
