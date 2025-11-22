@@ -82,7 +82,9 @@ def solicitar_pedido(request):
                 imagen=img
             )
 
-        url_seguimiento = f"/pedido/seguimiento/{pedido.token_seguimiento}/"
+        url_seguimiento = request.build_absolute_uri(
+           f"/pedido/seguimiento/{pedido.token_seguimiento}/"
+        )   
 
         return render(
             request,
