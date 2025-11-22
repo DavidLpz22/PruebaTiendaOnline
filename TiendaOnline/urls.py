@@ -8,6 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home, name='home'),
     path('producto/<int:id>/', views.detalle_producto, name='detalle_producto'),
+    path("pedido/nuevo/", views.solicitar_pedido, name="solicitar_pedido"),
+    path("pedido/seguimiento/<str:token>/", views.seguimiento_pedido, name="seguimiento_pedido"),
 ]
 
 if settings.DEBUG:
