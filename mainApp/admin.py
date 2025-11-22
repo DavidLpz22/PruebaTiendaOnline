@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from .models import Categoria, Producto, Insumo, Pedido, PedidoImagen
-
+from django.utils.html import format_html
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
@@ -12,11 +12,23 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "categoria", "precio_base", "destacado", "activo")
+    list_display = ("nombre", "categoria", "precio_base", "destacado", "activo","vista_imagen_1","vista_imagen_2","vista_imagen_3",)
     list_filter = ("categoria", "destacado", "activo")
     search_fields = ("nombre", "descripcion")
     readonly_fields = ("creado", "actualizado")
 
+    def vista_imagen_1(self, obj):
+        if obj.imagen_1:
+            return format_html('<img src="{}" width="100" height="100" />', obj.imagen_1.url)
+        return "No Image"
+    def vista_imagen_2(self, obj):
+        if obj.imagen_2:
+            return format_html('<img src="{}" width="100" height="100" />', obj.imagen_2.url)
+        return "No Image"
+    def vista_imagen_3(self, obj):
+        if obj.imagen_3:
+            return format_html('<img src="{}" width="100" height="100" />', obj.imagen_3.url)
+        return "No Image"
 
 @admin.register(Insumo)
 class InsumoAdmin(admin.ModelAdmin):
