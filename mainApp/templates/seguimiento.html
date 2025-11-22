@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Seguimiento del Pedido</h2>
+
+<p><strong>Estado del pedido:</strong> {{ pedido.estado }}</p>
+<p><strong>Estado del pago:</strong> {{ pedido.estado_pago }}</p>
+
+<p><strong>Cliente:</strong> {{ pedido.cliente_nombre }}</p>
+
+<p><strong>Descripción solicitada:</strong><br>
+{{ pedido.descripcion }}</p>
+
+{% if pedido.fecha_solicitada %}
+<p><strong>Fecha solicitada:</strong> {{ pedido.fecha_solicitada }}</p>
+{% endif %}
+
+<h3>Imágenes de referencia</h3>
+{% for img in imagenes %}
+    <img src="{{ img.imagen.url }}" width="200" class="m-2">
+{% empty %}
+    <p>No se subieron imágenes.</p>
+{% endfor %}
+
+{% endblock %}
