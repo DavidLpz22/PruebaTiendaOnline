@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from mainApp.models import Categoria, Producto
+from mainApp.models import Categoria, Producto, Pedido, PedidoImagen
+from django.http import Http404
+from django.utils import get_object_or_404
 # Create your views here.
 def home(request):
     q = request.GET.get('q', '').strip()
