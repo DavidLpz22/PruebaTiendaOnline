@@ -15,8 +15,7 @@ class ProductoAdmin(admin.ModelAdmin):
     list_display = ("nombre", "categoria", "precio_base", "destacado", "activo","vista_imagen_1","vista_imagen_2","vista_imagen_3",)
     list_filter = ("categoria", "destacado", "activo")
     search_fields = ("nombre", "descripcion")
-    readonly_fields = ("creado", "actualizado")
-
+    
     def vista_imagen_1(self, obj):
         if obj.imagen_1:
             return format_html('<img src="{}" width="100" height="100" />', obj.imagen_1.url)
@@ -32,14 +31,7 @@ class ProductoAdmin(admin.ModelAdmin):
 
 @admin.register(Insumo)
 class InsumoAdmin(admin.ModelAdmin):
-    list_display = (
-        "nombre",
-        "tipo",
-        "marca",
-        "color",
-        "cantidad_disponible",
-        "unidad",
-    )
+    list_display = ("nombre","tipo","marca","color","cantidad_disponible","unidad",)
     list_filter = ("tipo", "marca", "color")
     search_fields = ("nombre", "marca", "color")
 
@@ -51,31 +43,10 @@ class PedidoImagenInline(admin.TabularInline):
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = (
-        "codigo_publico",
-        "cliente_nombre",
-        "producto_referencia",
-        "estado",
-        "estado_pago",
-        "plataforma_origen",
-        "fecha_solicitada",
-        "fecha_creacion",
-    )
-    list_filter = (
-        "estado",
-        "estado_pago",
-        "plataforma_origen",
-        "fecha_creacion",
-        "fecha_solicitada",
-    )
-    search_fields = (
-        "cliente_nombre",
-        "cliente_email",
-        "cliente_telefono",
-        "cliente_red_social",
-        "token_seguimiento",
-    )
-    readonly_fields = ("token_seguimiento", "fecha_creacion", "fecha_actualizacion")
+    list_display = ("codigo_publico","cliente_nombre","producto_referencia","estado","estado_pago","plataforma_origen","fecha_solicitada","fecha_creacion",)
+    list_filter = ("estado","estado_pago","plataforma_origen","fecha_creacion","fecha_solicitada",)
+    search_fields = ("cliente_nombre","cliente_email","cliente_telefono","cliente_red_social","token_seguimiento",)
+    readonly_fields = ("token_seguimiento",)
     inlines = [PedidoImagenInline]
 
     fieldsets = (
@@ -113,6 +84,6 @@ class PedidoAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if obj.estado == "finalizada" and obj.estado_pago != "pagado":
             raise ValidationError(
-                "No puedes finalizar el pedido si el estado de pago no es 'Pagado'."
+                "No puedes finalizar el pedido si el estado de pago no es 'Pagado'"
             )
         super().save_model(request, obj, form, change)

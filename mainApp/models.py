@@ -25,8 +25,8 @@ class Producto(models.Model):
     imagen_1 = models.ImageField(upload_to='productos/', blank=True, null=True)
     imagen_2 = models.ImageField(upload_to='productos/', blank=True, null=True)
     imagen_3 = models.ImageField(upload_to='productos/', blank=True, null=True)
-    creado = models.DateTimeField(auto_now_add=True)
-    actualizado = models.DateTimeField(auto_now=True)
+    creado = models.DateTimeField(null=True, blank=True)
+    actualizado = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -100,8 +100,8 @@ class Pedido(models.Model):
 
     token_seguimiento = models.CharField(max_length=20,unique=True,editable=False,blank=True,default="",)
 
-    fecha_creacion = models.DateField()
-    fecha_actualizacion = models.DateField()
+    fecha_creacion = models.DateField(null=True,blank=True)
+    fecha_actualizacion = models.DateField(null=True,blank=True)
 
     def __str__(self):
         return f"Pedido #{self.id} - {self.cliente_nombre}"
