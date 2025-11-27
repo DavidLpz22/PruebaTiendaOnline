@@ -10,21 +10,31 @@ class Categoria(models.Model):
         return self.nombre
 
 
+
 class Producto(models.Model):
-    categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE,related_name="productos",verbose_name="Categoría",)
+    categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE,related_name="productos",verbose_name="Categoría")
     nombre = models.CharField(max_length=150)
     descripcion = models.TextField(blank=True)
     precio_base = models.IntegerField()
     destacado = models.BooleanField(default=False)
     activo = models.BooleanField(default=True)
-    imagen_1 = models.ImageField(upload_to='productos/',blank=True,null=True,)
-    imagen_2 = models.ImageField(upload_to='productos/',blank=True,null=True,)
-    imagen_3 = models.ImageField(upload_to='productos/',blank=True,null=True,)
+
+    oferta = models.BooleanField(default=False)
+    descuento = models.PositiveIntegerField(default=0, help_text="Descuento en %")
+
+    imagen_1 = models.ImageField(upload_to='productos/', blank=True, null=True)
+    imagen_2 = models.ImageField(upload_to='productos/', blank=True, null=True)
+    imagen_3 = models.ImageField(upload_to='productos/', blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.nombre
+
+    def precio_final(self):
+        if self.oferta and self.descuento > 0:
+            return int(self.precio_base - (self.precio_base * (self.descuento / 100)))
+        return self.precio_base
 
 
 class Insumo(models.Model):

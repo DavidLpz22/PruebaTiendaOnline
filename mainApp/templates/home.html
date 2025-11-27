@@ -12,51 +12,62 @@
 
 <body class="container mt-2">
 
-    <div class="alert alert-info text-center display-2">Tienda online</div>
+    <div class="alert alert-success text-center display-2">Tienda online</div>
 
-    <nav class="navbar bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
 
-            <form class="d-flex" method="GET" role="search">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." value="{{ q }}" />
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-                <select class="form-select me-2" name="cat">
-                    <option value="">Todas las categorías</option>
+                <!-- LINKS -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                    {% for categoria in categorias %}
-                    {% if cat == categoria.id|stringformat:"s" %}
-                    <option value="{{ categoria.id }}" selected>{{ categoria.nombre }}</option>
-                    {% else %}
-                    <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
+                    <li class="nav-item">
+                        <a class="nav-link {% if not request.GET %}active{% endif %}" href="/">Home</a>
+                    </li>
 
-                <!-- BOTÓN -->
-                <button class="btn btn-outline-success" type="submit">Buscar</button>
-            </form>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.GET.destacados %}active{% endif %}" href="?destacados=1">
+                            Destacados
+                        </a>
+                    </li>
 
-        </div>
-    </nav>
-    <h2 class="mt-4"> Productos destacados</h2>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.GET.ofertas %}active{% endif %}" href="?ofertas=1">
+                            Ofertas
+                        </a>
+                    </li>
+                </ul>
 
-    <div class="row">
-        {% for producto in destacados %}
-        <div class="col-md-3 d-flex justify-content-center">
-            <div class="card text-center">
-                <img src="{{ producto.imagen_1.url }}" class="card-img-top">
-                <div class="card-body">
-                    <h5>{{ producto.nombre }}</h5>
-                    <p>{{ producto.descripcion }}</p>
-                    <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-warning">Destacado</a>
-                </div>
+                <!-- BUSCADOR -->
+                <form class="d-flex" method="GET" role="search">
+
+                    <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." value="{{ q }}">
+
+                    <select class="form-select me-2" name="cat">
+                        <option value="">Todas las categorías</option>
+
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}"
+                            {% if cat == categoria.id|stringformat:"s" %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
+
             </div>
         </div>
-        {% empty %}
-        <p>No hay productos destacados.</p>
-        {% endfor %}
-    </div>
+    </nav>
+
+
     <div class="container mt-3">
 
         {% if q %}
@@ -65,27 +76,47 @@
         </div>
         {% endif %}
 
-        <h2 class="mt-4"> Productos</h2>
+        <h2 class="mt-4">Productos</h2>
 
-        <div class="row">
-            {% for producto in productos %}
-            <div class="col-md-3 d-flex justify-content-center">
-                <div class="card text-center mb-3" style="width: 18rem;">
-                    <img src="{{ producto.imagen_1.url }}" class="card-img-top" alt="Imagen del producto">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ producto.nombre }}</h5>
-                        <p class="card-text">{{ producto.descripcion }}</p>
-                        <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-primary">Mostrar
-                            descripción</a>
-                    </div>
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-3 d-flex justify-content-center">
+            <div class="card text-center mb-3" style="width: 18rem;">
+                <img src="{{ producto.imagen_1.url }}" class="card-img-top" alt="Imagen del producto">
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion }}</p>
+
+                    {% if producto.oferta %}
+                        <p>
+                            <span class="text-danger fw-bold">${{ producto.precio_final }}</span>
+                            <small class="text-muted text-decoration-line-through">${{ producto.precio_base }}</small>
+                            <span class="badge bg-danger">{{ producto.descuento }}% OFF</span>
+                        </p>
+
+                        <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-danger">
+                            Ver oferta
+                        </a>
+
+                    {% else %}
+                        <p class="fw-bold">${{ producto.precio_base }}</p>
+
+                        <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">
+                            Mostrar descripción
+                        </a>
+                    {% endif %}
+                    
                 </div>
             </div>
-            {% empty %}
-            <div class="alert alert-warning text-center">
-                No se encontraron productos.
-            </div>
-            {% endfor %}
         </div>
+        {% empty %}
+        <div class="alert alert-warning text-center">
+            No se encontraron productos.
+        </div>
+        {% endfor %}
+    </div>
+
 
     </div>
 

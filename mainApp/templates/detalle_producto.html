@@ -15,7 +15,6 @@
 
         <div class="row g-0">
 
-            <!-- GALERÍA DE IMÁGENES -->
             <div class="col-md-4">
                 <div id="galeria" class="carousel slide" data-bs-ride="carousel">
 
@@ -40,7 +39,6 @@
                         {% endif %}
                     </div>
 
-                    <!-- Controles -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#galeria" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon"></span>
                     </button>
@@ -51,17 +49,25 @@
                 </div>
             </div>
 
-            <!-- INFORMACIÓN DEL PRODUCTO -->
-            <div class="col-md-8">
+            <div class="col-md-8 display-6">
                 <div class="card-body">
                     <h2 class="card-title">{{ producto.nombre }}</h2>
                     <p class="card-text">{{ producto.descripcion }}</p>
-                    <h3 class="text-success">$ {{ producto.precio_base }}</h3>
+            {% if producto.oferta %}
+    <p>
+        <span class="text-danger fw-bold">${{ producto.precio_final }}</span>
+        <small class="text-muted text-decoration-line-through">${{ producto.precio_base }}</small>
+        <span class="badge bg-danger">{{ producto.descuento }}% OFF</span>
+    </p>
+            {% else %}
+                <p>${{ producto.precio_base }}</p>
+            {% endif %}          
                     <a href="/pedido/nuevo/?producto={{ producto.id}}" class="btn btn-success">
                         Solicitar este producto
                     </a>
                 </div>
             </div>
+                <a href="/" class="btn btn-success mt-3">Volver al inicio</a>
 
         </div>
 

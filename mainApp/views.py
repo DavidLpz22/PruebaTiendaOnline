@@ -3,11 +3,15 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from mainApp.models import Categoria, Producto, Pedido, PedidoImagen
 from django.http import Http404
-from django.utils import get_object_or_404
+from django.utils import timezone
 # Create your views here.
+
 def home(request):
     q = request.GET.get('q', '').strip()
     cat = request.GET.get('cat', '').strip()
+
+    ver_ofertas = request.GET.get('ofertas', '').strip()
+    ver_destacados = request.GET.get('destacados', '').strip()
 
     productos = Producto.objects.filter(activo=True)
 
@@ -20,17 +24,27 @@ def home(request):
     if cat:
         productos = productos.filter(categoria__id=cat)
 
-    destacados = Producto.objects.filter(destacado=True, activo=True)
+    productos_destacados = Producto.objects.filter(destacado=True, activo=True)
 
-    data = {
+    productos_oferta = Producto.objects.filter(oferta=True, activo=True)
+
+    if ver_destacados:
+        productos = productos_destacados
+
+    if ver_ofertas:
+        productos = productos_oferta
+
+    return render(request, 'home.html', {
         'productos': productos,
-        'destacados': destacados,
+        'destacados': productos_destacados,
+        'ofertas': productos_oferta,
+        'ver_destacados': ver_destacados,
+        'ver_ofertas': ver_ofertas,
         'q': q,
         'cat': cat,
         'categorias': Categoria.objects.all(),
-    }
+    })
 
-    return render(request, 'home.html', data)
 
 def detalle_producto(request, id):
     producto = get_object_or_404(Producto, id=id, activo=True)
