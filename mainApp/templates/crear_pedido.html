@@ -1,47 +1,71 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Solicitud de Pedido</h2>
+<div class="container my-4">
+    <div class="card shadow-sm" style="max-width: 700px; margin: auto;">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0">Solicitud de Pedido</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nombre del Cliente</label>
+                        <input type="text" name="cliente_nombre" required class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="cliente_email" class="form-control">
+                    </div>
+                </div>
 
-    <label>Nombre del Cliente</label>
-    <input type="text" name="cliente_nombre" required class="form-control">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="cliente_telefono" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Red social</label>
+                        <input type="text" name="cliente_red_social" class="form-control" placeholder="Instagram, Facebook, etc.">
+                    </div>
+                </div>
 
-    <label>Email</label>
-    <input type="email" name="cliente_email" class="form-control">
+                <div class="mb-3">
+                    <label class="form-label">Producto de referencia (Opcional)</label>
+                    <select name="producto_referencia" class="form-select">
+                        <option value="">-- Ninguno --</option>
+                        {% for producto in productos %}
+                            <option value="{{ producto.id }}" {% if producto_seleccionado and producto.id == producto_seleccionado.id %}selected{% endif %}>
+                                {{ producto.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-    <label>Teléfono</label>
-    <input type="text" name="cliente_telefono" class="form-control">
+                <div class="mb-3">
+                    <label class="form-label">Descripción del Pedido</label>
+                    <textarea name="descripcion" class="form-control" rows="3" required></textarea>
+                </div>
 
-    <label>Red social (Instagram, Facebook, etc)</label>
-    <input type="text" name="cliente_red_social" class="form-control">
+                <div class="mb-3">
+                    <label class="form-label">Fecha solicitada (Opcional)</label>
+                    <input type="date" name="fecha_solicitada" class="form-control">
+                </div>
 
-    <label>Producto de referencia (Opcional)</label>
+                <div class="mb-3">
+                    <label class="form-label">Imágenes de referencia</label>
+                    <input type="file" name="imagenes" multiple class="form-control">
+                </div>
 
-    <select name="producto_referencia" class="form-control">
-        <option value="">-- Ninguno --</option>
-        {% for producto in productos %}
-            {% if producto_seleccionado and producto.id == producto_seleccionado.id %}
-                <option value="{{ producto.id }}" selected>{{ producto.nombre }}</option>
-            {% else %}
-                <option value="{{ producto.id }}">{{ producto.nombre }}</option>
-            {% endif %}
-        {% endfor %}
-    </select>
-
-    <label>Descripción del Pedido</label>
-    <textarea name="descripcion" class="form-control" required></textarea>
-
-    <label>Fecha solicitada (opcional)</label>
-    <input type="date" name="fecha_solicitada" class="form-control">
-
-    <label>Imágenes de referencia</label>
-    <input type="file" name="imagenes" multiple class="form-control">
-
-    <br>
-    <button class="btn btn-primary" type="submit">Enviar Solicitud</button>
-</form>
+                <div class="text-center">
+                    <button class="btn btn-primary px-4" type="submit">Enviar Solicitud</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
+

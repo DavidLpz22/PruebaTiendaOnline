@@ -1,25 +1,41 @@
+
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Seguimiento del Pedido</h2>
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-header text-center bg-primary text-white">
+            <h2 class="mb-0">Seguimiento del Pedido</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Estado del pedido:</strong> {{ pedido.estado }}</p>
+                    <p><strong>Estado del pago:</strong> {{ pedido.estado_pago }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Cliente:</strong> {{ pedido.cliente_nombre }}</p>
+                    {% if pedido.fecha_solicitada %}
+                        <p><strong>Fecha solicitada:</strong> {{ pedido.fecha_solicitada }}</p>
+                    {% endif %}
+                </div>
+            </div>
 
-<p><strong>Estado del pedido:</strong> {{ pedido.estado }}</p>
-<p><strong>Estado del pago:</strong> {{ pedido.estado_pago }}</p>
+            <div class="mb-3">
+                <p><strong>Descripción solicitada:</strong></p>
+                <p class="text-muted">{{ pedido.descripcion }}</p>
+            </div>
 
-<p><strong>Cliente:</strong> {{ pedido.cliente_nombre }}</p>
-
-<p><strong>Descripción solicitada:</strong><br>
-{{ pedido.descripcion }}</p>
-
-{% if pedido.fecha_solicitada %}
-<p><strong>Fecha solicitada:</strong> {{ pedido.fecha_solicitada }}</p>
-{% endif %}
-
-<h3>Imágenes de referencia</h3>
-{% for img in imagenes %}
-    <img src="{{ img.imagen.url }}" width="200" class="m-2">
-{% empty %}
-    <p>No se subieron imágenes.</p>
-{% endfor %}
+            <hr>
+            <h4 class="mb-3">Imágenes de referencia</h4>
+            <div class="d-flex flex-wrap">
+                {% for img in imagenes %}
+                    <img src="{{ img.imagen.url }}" class="img-thumbnail m-2" style="widthp>No se subieron imágenes.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
+

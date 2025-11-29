@@ -12,7 +12,7 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "categoria", "precio_base", "destacado", "activo","vista_imagen_1","vista_imagen_2","vista_imagen_3",)
+    list_display = ("nombre", "categoria", "precio_base", "destacado", "activo","oferta","vista_imagen_1","vista_imagen_2","vista_imagen_3",)
     list_filter = ("categoria", "destacado", "activo")
     search_fields = ("nombre", "descripcion")
     
