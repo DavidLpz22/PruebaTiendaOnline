@@ -37,7 +37,12 @@
                             <img src="{{ producto.imagen_3.url }}" class="d-block w-100" alt="Imagen 3">
                         </div>
                         {% endif %}
+
+                        {% if not producto.imagen_1 and not producto.imagen_2 and not producto.imagen_3 %}
+                        <div class="carousel-item active">
+                            <img src="/media/placeholder.png" class="d-block w-100" alt="Sin imagen">
                     </div>
+                        {% endif %}
 
                     <button class="carousel-control-prev" type="button" data-bs-target="#galeria" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon"></span>

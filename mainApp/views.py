@@ -99,7 +99,7 @@ def solicitar_pedido(request):
             )
 
         url_seguimiento = request.build_absolute_uri(
-           f"/pedido/seguimiento/{pedido.token_seguimiento}/"
+            f"/pedido/seguimiento/{pedido.token_seguimiento}/"
         )   
 
         return render(
@@ -123,3 +123,25 @@ def seguimiento_pedido(request, token):
         "pedido": pedido,
         "imagenes": pedido.imagenes.all()
     })
+
+def pedido_personalizado(request):
+    if request.method == "POST":
+        pedido = Pedido.objects.create(
+            cliente_nombre = request.POST.get("cliente_nombre"),
+            cliente_email = request.POST.get("cliente_email"),
+            cliente_telefono = request.POST.get("cliente_telefono"),
+            cliente_red_social = request.POST.get("cliente_red_social"),
+            descripcion = request.POST.get("descripcion"),
+            fecha_solicitada = request.POST.get("fecha_solicitada") or None,
+            producto_referencia = None,
+            plataforma_origen = "sitio_web",
+            estado = "solicitado",
+            estado_pago = "pendiente",
+        )
+        for img in request.FILES.getlist("imagenes"):
+            PedidoImagen.objects.create(
+                pedido=pedido,
+                imagen=img
+            )
+        return redirect("pedido_creado", token=pedido.token_seguimiento)
+    return render(request, "pedido_personalizado.html")
