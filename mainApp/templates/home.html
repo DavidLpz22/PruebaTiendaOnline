@@ -44,8 +44,6 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pedido_personalizado' %}">
-                            Pedido Personalizado
                         </a>
                     </li>
                 </ul>
@@ -97,7 +95,6 @@
 
             <div class="card-body">
                 <h5 class="card-title">{{ producto.nombre }}</h5>
-                <p class="card-text">{{ producto.descripcion }}</p>
 
                 {% if producto.oferta %}
                     <p>
@@ -108,14 +105,14 @@
                         <span class="badge bg-danger">{{ producto.descuento }}% OFF</span>
                     </p>
 
-                    <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-danger">
-                        Ver oferta
+                    <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">
+                        Ver producto
                     </a>
                 {% else %}
                     <p class="fw-bold">${{ producto.precio_base }}</p>
 
                     <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">
-                        Mostrar descripción
+                        Ver producto
                     </a>
                 {% endif %}
             </div>

@@ -22,59 +22,59 @@
 
                         {% if producto.imagen_1 %}
                         <div class="carousel-item active">
-                            <img src="{{ producto.imagen_1.url }}" class="d-block w-100" alt="Imagen 1">
+                            <img src="{{ producto.imagen_1.url }}" class="d-block w-100 rounded" alt="Imagen 1">
                         </div>
                         {% endif %}
 
                         {% if producto.imagen_2 %}
                         <div class="carousel-item">
-                            <img src="{{ producto.imagen_2.url }}" class="d-block w-100" alt="Imagen 2">
+                            <img src="{{ producto.imagen_2.url }}" class="d-block w-100 rounded" alt="Imagen 2">
                         </div>
                         {% endif %}
 
                         {% if producto.imagen_3 %}
                         <div class="carousel-item">
-                            <img src="{{ producto.imagen_3.url }}" class="d-block w-100" alt="Imagen 3">
+                            <img src="{{ producto.imagen_3.url }}" class="d-block w-100 rounded" alt="Imagen 3">
                         </div>
                         {% endif %}
 
                         {% if not producto.imagen_1 and not producto.imagen_2 and not producto.imagen_3 %}
                         <div class="carousel-item active">
-                            <img src="/media/placeholder.png" class="d-block w-100" alt="Sin imagen">
-                    </div>
+                            <img src="/media/placeholder.png" class="d-block w-100 rounded" alt="Sin imagen">
+                        </div>
                         {% endif %}
+                    </div>
 
                     <button class="carousel-control-prev" type="button" data-bs-target="#galeria" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon"></span>
                     </button>
+
                     <button class="carousel-control-next" type="button" data-bs-target="#galeria" data-bs-slide="next">
                         <span class="carousel-control-next-icon"></span>
                     </button>
-
                 </div>
             </div>
 
-            <div class="col-md-8 display-6">
+            <div class="col-md-8 display-7">
                 <div class="card-body">
                     <h2 class="card-title">{{ producto.nombre }}</h2>
                     <p class="card-text">{{ producto.descripcion }}</p>
             {% if producto.oferta %}
     <p>
-        <span class="text-danger fw-bold">${{ producto.precio_final }}</span>
-        <small class="text-muted text-decoration-line-through">${{ producto.precio_base }}</small>
+        <span class="text-danger fw-bold display-6">${{ producto.precio_final }}</span>
+        <small class="text-muted text-decoration-line-through display-6 mb-3">${{ producto.precio_base }}</small>
         <span class="badge bg-danger">{{ producto.descuento }}% OFF</span>
     </p>
             {% else %}
-                <p>${{ producto.precio_base }}</p>
+                <p class="display-6 mb-3">${{ producto.precio_base }}</p>
             {% endif %}          
                     <a href="/pedido/nuevo/?producto={{ producto.id}}" class="btn btn-success">
                         Solicitar este producto
                     </a>
+                <div>
+                    <a href="/" class="btn btn-success mt-3">Volver al inicio</a>
                 </div>
-            </div>
-                <a href="/" class="btn btn-success mt-3">Volver al inicio</a>
-
-        </div>
+                </div>
 
     </div>
 
