@@ -30,7 +30,9 @@
             <h4 class="mb-3">Imágenes de referencia</h4>
             <div class="d-flex flex-wrap">
                 {% for img in imagenes %}
-                    <img src="{{ img.imagen.url }}" class="img-thumbnail m-2" style="widthp>No se subieron imágenes.</p>
+                    {{ img.imagen.url }}
+                {% empty %}
+                    <p>No se subieron imágenes.</p>
                 {% endfor %}
             </div>
         </div>
@@ -38,4 +40,5 @@
 </div>
 
 {% endblock %}
+
 
