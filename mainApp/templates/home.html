@@ -41,7 +41,25 @@
                             Ofertas
                         </a>
                     </li>
+
+                    {% if user.is_authenticated and user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/reportes/' %}active{% endif %}"
+                            href="{% url 'reporte_sistema' %}">
+                            Reportes
+                        </a>
+                    </li>
+                    {% endif %}
+
                 </ul>
+
+                <div class="d-flex align-items-center me-3">
+                    {% if user.is_authenticated and user.is_staff %}
+                    <a href="{% url 'logout_admin' %}" class="btn btn-danger btn-sm">Logout</a>
+                    {% else %}
+                    <a href="{% url 'login_admin' %}" class="btn btn-success btn-sm">Login Admin</a>
+                    {% endif %}
+                </div>
 
                 <form class="d-flex" method="GET" role="search">
 
@@ -76,50 +94,48 @@
 
         <h2 class="mt-4">Productos</h2>
 
-    <div class="row">
-        {% for producto in productos %}
-        <div class="col-md-3 d-flex justify-content-center">
-            <div class="card text-center mb-3" style="width: 18rem;">
+        <div class="row">
+            {% for producto in productos %}
+            <div class="col-md-3 d-flex justify-content-center">
+                <div class="card text-center mb-3" style="width: 18rem;">
 
-            {% if producto.imagen_1 %}
-                <img src="{{ producto.imagen_1.url }}" class="card-img-top" alt="Imagen del producto">
-            {% else %}
-                <img src="/media/placeholder.png" class="card-img-top" alt="Sin imagen">
-            {% endif %}
+                    {% if producto.imagen_1 %}
+                    <img src="{{ producto.imagen_1.url }}" class="card-img-top" alt="Imagen del producto">
+                    {% else %}
+                    <img src="/media/placeholder.png" class="card-img-top" alt="Sin imagen">
+                    {% endif %}
 
-            <div class="card-body">
-                <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
 
-                {% if producto.oferta %}
-                    <p>
-                        <span class="text-danger fw-bold">${{ producto.precio_final }}</span>
-                        <small class="text-muted text-decoration-line-through">
-                            ${{ producto.precio_base }}
-                        </small>
-                        <span class="badge bg-danger">{{ producto.descuento }}% OFF</span>
-                    </p>
+                        {% if producto.oferta %}
+                        <p>
+                            <span class="text-danger fw-bold">${{ producto.precio_final }}</span>
+                            <small class="text-muted text-decoration-line-through">
+                                ${{ producto.precio_base }}
+                            </small>
+                            <span class="badge bg-danger">{{ producto.descuento }}% OFF</span>
+                        </p>
 
-                    <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">
-                        Ver producto
-                    </a>
-                {% else %}
-                    <p class="fw-bold">${{ producto.precio_base }}</p>
+                        <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">
+                            Ver producto
+                        </a>
+                        {% else %}
+                        <p class="fw-bold">${{ producto.precio_base }}</p>
 
-                    <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">
-                        Ver producto
-                    </a>
-                {% endif %}
+                        <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-success">
+                            Ver producto
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+            {% empty %}
+            <div class="alert alert-warning text-center">
+                No se encontraron productos.
+            </div>
+            {% endfor %}
         </div>
-    </div>
-    {% empty %}
-    <div class="alert alert-warning text-center">
-        No se encontraron productos.
-    </div>
-    {% endfor %}
-</div>
-
-
 
     </div>
 

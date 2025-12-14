@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 0 auto; padding: 16px;">
+    <h1>Reporte del Sistema</h1>
+
+    <form method="get" style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <h3>Filtros</h3>
+
+        <div style="display:flex; gap:12px; flex-wrap: wrap;">
+            <div>
+                <label>Fecha inicio</label><br>
+                {{ form.fecha_inicio }}
+            </div>
+            <div>
+                <label>Fecha fin</label><br>
+                {{ form.fecha_fin }}
+            </div>
+            <div>
+                <label>Límite tabla</label><br>
+                {{ form.limite }}
+            </div>
+        </div>
+
+        <div style="display:flex; gap:30px; flex-wrap: wrap; margin-top: 12px;">
+            <div>
+                <h4>Estados</h4>
+                {{ form.estados }}
+            </div>
+
+            <div>
+                <h4>Plataformas</h4>
+                {{ form.plataformas }}
+            </div>
+        </div>
+
+        <button type="submit" style="margin-top: 12px;">Aplicar</button>
+    </form>
+
+    <div style="display:flex; gap:16px; flex-wrap: wrap; margin-bottom: 16px;">
+        <div style="border:1px solid #ddd; padding:12px; border-radius:8px; min-width: 240px;">
+            <strong>Total pedidos:</strong> {{ total_pedidos }}
+        </div>
+        <div style="border:1px solid #ddd; padding:12px; border-radius:8px; min-width: 240px;">
+            <strong>Total ventas:</strong> {{ total_ventas }}
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+        <div style="border:1px solid #ddd; padding:12px; border-radius:8px;">
+            <h3>Pedidos por estado</h3>
+            <canvas id="chartEstado"></canvas>
+        </div>
+
+        <div style="border:1px solid #ddd; padding:12px; border-radius:8px;">
+            <h3>Pedidos por plataforma</h3>
+            <canvas id="chartPlataforma"></canvas>
+        </div>
+
+        <div style="border:1px solid #ddd; padding:12px; border-radius:8px; grid-column: 1 / -1;">
+            <h3>Top productos más solicitados</h3>
+            <canvas id="chartProductos"></canvas>
+        </div>
+    </div>
+
+    <h2 style="margin-top: 20px;">Tabla de pedidos</h2>
+    <div style="overflow:auto; border:1px solid #ddd; border-radius:8px;">
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background:#f5f5f5;">
+                    <th style="padding:8px; border-bottom:1px solid #ddd;">ID</th>
+                    <th style="padding:8px; border-bottom:1px solid #ddd;">Token</th>
+                    <th style="padding:8px; border-bottom:1px solid #ddd;">Producto</th>
+                    <th style="padding:8px; border-bottom:1px solid #ddd;">Estado</th>
+                    <th style="padding:8px; border-bottom:1px solid #ddd;">Plataforma</th>
+                    <th style="padding:8px; border-bottom:1px solid #ddd;">Total</th>
+                    <th style="padding:8px; border-bottom:1px solid #ddd;">Creación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pedidos_tabla %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.id }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.token_seguimiento }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.producto.nombre|default:"(Sin producto)" }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.estado }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.plataforma_origen }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.total }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.fecha_creacion }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="padding:10px;">No hay pedidos con esos filtros.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# PASAR DATOS COMO JSON SEGURO #}
+{{ estado_labels|json_script:"estado-labels" }}
+{{ estado_data|json_script:"estado-data" }}
+{{ plat_labels|json_script:"plat-labels" }}
+{{ plat_data|json_script:"plat-data" }}
+{{ prod_labels|json_script:"prod-labels" }}
+{{ prod_data|json_script:"prod-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const estadoLabels = JSON.parse(document.getElementById("estado-labels").textContent);
+    const estadoData   = JSON.parse(document.getElementById("estado-data").textContent);
+
+    const platLabels = JSON.parse(document.getElementById("plat-labels").textContent);
+    const platData   = JSON.parse(document.getElementById("plat-data").textContent);
+
+    const prodLabels = JSON.parse(document.getElementById("prod-labels").textContent);
+    const prodData   = JSON.parse(document.getElementById("prod-data").textContent);
+
+    new Chart(document.getElementById("chartEstado"), {
+        type: "bar",
+        data: {
+            labels: estadoLabels,
+            datasets: [{ label: "Pedidos", data: estadoData }]
+        }
+    });
+
+    new Chart(document.getElementById("chartPlataforma"), {
+        type: "doughnut",
+        data: {
+            labels: platLabels,
+            datasets: [{ label: "Pedidos", data: platData }]
+        }
+    });
+
+    new Chart(document.getElementById("chartProductos"), {
+        type: "bar",
+        data: {
+            labels: prodLabels,
+            datasets: [{ label: "Solicitudes", data: prodData }]
+        },
+        options: { indexAxis: "y" }
+    });
+</script>
+{% endblock %}

@@ -4,6 +4,15 @@ from django.shortcuts import get_object_or_404
 from mainApp.models import Categoria, Producto, Pedido, PedidoImagen, Insumo
 from django.http import Http404
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Count, Sum
+from django.utils import timezone
+from datetime import datetime, time
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
+
+from .models import Pedido
+from .forms import ReporteFiltroForm
 
 from rest_framework import viewsets, mixins
 from .serializers import InsumoSerializer, PedidoSerializer
@@ -194,11 +203,112 @@ class PedidoFiltroAPIView(APIView):
 
         serializer = PedidoSerializer(pedidos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-   
 
 
+def _staff_only(user):
+    return user.is_staff
 
 
+@login_required
+@user_passes_test(_staff_only)
+def reporte_sistema(request):
+    form = ReporteFiltroForm(request.GET or None)
 
+    qs = Pedido.objects.all().select_related("producto_referencia").order_by("-fecha_creacion")
+
+    fecha_inicio = None
+    fecha_fin = None
+    estados = []
+    plataformas = []
+    limite = 50
+
+    if form.is_valid():
+        fecha_inicio = form.cleaned_data.get("fecha_inicio")
+        fecha_fin = form.cleaned_data.get("fecha_fin")
+        estados = form.cleaned_data.get("estados") or []
+        plataformas = form.cleaned_data.get("plataformas") or []
+        limite = form.cleaned_data.get("limite") or 50
+
+    if fecha_inicio or fecha_fin:
+        if fecha_inicio:
+            dt_ini = timezone.make_aware(datetime.combine(fecha_inicio, time.min))
+            qs = qs.filter(fecha_creacion__gte=dt_ini)
+        if fecha_fin:
+            dt_fin = timezone.make_aware(datetime.combine(fecha_fin, time.max))
+            qs = qs.filter(fecha_creacion__lte=dt_fin)
+    else:
+        qs = qs.filter(fecha_creacion__gte=timezone.now() - timezone.timedelta(days=30))
+
+    if estados:
+        qs = qs.filter(estado__in=estados)
+    if plataformas:
+        qs = qs.filter(plataforma_origen__in=plataformas)
+
+    pedidos_tabla = qs[:limite]
+
+    total_pedidos = qs.count()
+    total_ventas = qs.aggregate(s=Sum("total"))["s"] or 0
+
+    pedidos_por_estado = list(
+        qs.values("estado").annotate(total=Count("id")).order_by("-total")
+    )
+    pedidos_por_plataforma = list(
+        qs.values("plataforma_origen").annotate(total=Count("id")).order_by("-total")
+    )
+    top_productos = list(
+        qs.exclude(producto_referencia__isnull=True)
+            .values("producto_referencia__nombre")
+            .annotate(total=Count("id"))
+            .order_by("-total")[:10]
+    )
+
+    estado_labels = [x["estado"] for x in pedidos_por_estado]
+    estado_data = [x["total"] for x in pedidos_por_estado]
+
+    plat_labels = [x["plataforma_origen"] for x in pedidos_por_plataforma]
+    plat_data = [x["total"] for x in pedidos_por_plataforma]
+
+    prod_labels = [x["producto_referencia__nombre"] for x in top_productos]
+    prod_data = [x["total"] for x in top_productos]
+
+    context = {
+        "form": form,
+        "pedidos_tabla": pedidos_tabla,
+        "total_pedidos": total_pedidos,
+        "total_ventas": total_ventas,
+        "estado_labels": estado_labels,
+        "estado_data": estado_data,
+        "plat_labels": plat_labels,
+        "plat_data": plat_data,
+        "prod_labels": prod_labels,
+        "prod_data": prod_data,
+    }
+    return render(request, "reporte_sistema.html", context)
+
+
+def login_admin(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None and user.is_staff:
+                login(request, user)
+                return redirect('home')
+            else:
+                form.add_error(None, 'Usuario o contraseña incorrectos, o no tiene permisos de administrador.')
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_admin(request):
+    logout(request)
+    return redirect('home')
 
 

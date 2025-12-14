@@ -23,6 +23,9 @@ urlpatterns = [
     path("pedido/personalizado/", views.pedido_personalizado, name="pedido_personalizado"),
     path('api/', include(router.urls)),
     path('api/pedidos-filtrar/', PedidoFiltroAPIView.as_view()),
+    path("reportes/", views.reporte_sistema, name="reporte_sistema"),
+    path("login/", views.login_admin, name="login_admin"),
+    path("logout/", views.logout_admin, name="logout_admin"),
 ]
 
 if settings.DEBUG:
