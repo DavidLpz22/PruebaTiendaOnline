@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from rest_framework.routers import DefaultRouter
-from mainApp.views import InsumoViewSet, PedidoViewSet
+from mainApp.views import InsumoViewSet, PedidoViewSet, PedidoFiltroAPIView
 
 router = DefaultRouter()
 router.register(r'insumos', InsumoViewSet, basename='insumo')
@@ -22,6 +22,7 @@ urlpatterns = [
     path("pedido/seguimiento/<str:token>/", views.seguimiento_pedido, name="seguimiento_pedido"),
     path("pedido/personalizado/", views.pedido_personalizado, name="pedido_personalizado"),
     path('api/', include(router.urls)),
+    path('api/pedidos-filtrar/', PedidoFiltroAPIView.as_view()),
 ]
 
 if settings.DEBUG:
