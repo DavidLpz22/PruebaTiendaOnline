@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from mainApp.models import Categoria, Producto, Pedido, PedidoImagen, Insumo
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.utils import timezone
 
-from rest_framework import viewsets
-from .serializers import InsumoSerializer
+from rest_framework import viewsets, mixins
+from .serializers import InsumoSerializer, PedidoSerializer
 
 
 # Create your views here.
@@ -154,6 +154,14 @@ def pedido_personalizado(request):
 class InsumoViewSet(viewsets.ModelViewSet):
     queryset = Insumo.objects.all()
     serializer_class = InsumoSerializer
+
+class PedidoViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoSerializer
 
 
 
