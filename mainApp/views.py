@@ -7,6 +7,9 @@ from django.utils import timezone
 
 from rest_framework import viewsets, mixins
 from .serializers import InsumoSerializer, PedidoSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 
 
 # Create your views here.
@@ -162,6 +165,40 @@ class PedidoViewSet(
 ):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
+
+
+class PedidoFiltroAPIView(APIView):
+    def get(self, request):
+
+        pedidos = Pedido.objects.all()
+
+        # Parámetros GET
+        fecha_inicio = request.GET.get("fecha_inicio")
+        fecha_fin = request.GET.get("fecha_fin")
+        estado = request.GET.get("estado")
+        limite = request.GET.get("limite")
+
+        # Filtro por rango de fechas
+        if fecha_inicio and fecha_fin:
+            pedidos = pedidos.filter(
+                fecha_creacion_range=[fecha_inicio, fecha_fin]
+            )
+
+        # Filtro por estado
+        if estado:
+            pedidos = pedidos.filter(estado=estado)
+
+        # Límite de resultados
+        if limite:
+            pedidos = pedidos[:int(limite)]
+
+        serializer = PedidoSerializer(pedidos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+   
+
+
+
+
 
 
 
