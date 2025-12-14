@@ -6,10 +6,12 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from rest_framework.routers import DefaultRouter
-from mainApp.views import InsumoViewSet
+from mainApp.views import InsumoViewSet, PedidoViewSet
 
 router = DefaultRouter()
 router.register(r'insumos', InsumoViewSet, basename='insumo')
+router.register(r'pedidos', InsumoViewSet, basename='pedido')
+
 urlpatterns = router.urls
 
 urlpatterns = [
