@@ -1,9 +1,17 @@
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from mainApp import views
 from django.conf.urls.static import static
 from django.conf import settings
+
+from rest_framework.routers import DefaultRouter
+from mainApp.views import InsumoViewSet
+
+router = DefaultRouter()
+router.register(r'insumos', InsumoViewSet, basename='insumo')
+urlpatterns = router.urls
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home, name='home'),
@@ -11,6 +19,7 @@ urlpatterns = [
     path("pedido/nuevo/", views.solicitar_pedido, name="solicitar_pedido"),
     path("pedido/seguimiento/<str:token>/", views.seguimiento_pedido, name="seguimiento_pedido"),
     path("pedido/personalizado/", views.pedido_personalizado, name="pedido_personalizado"),
+    path('api/', include(router.urls)),
 ]
 
 if settings.DEBUG:
