@@ -1,9 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from mainApp.models import Categoria, Producto, Pedido, PedidoImagen
-from django.http import Http404
+from mainApp.models import Categoria, Producto, Pedido, PedidoImagen, Insumo
+from django.http import Http404, JsonResponse
 from django.utils import timezone
+
+from rest_framework import viewsets
+from .serializers import InsumoSerializer
+
+
 # Create your views here.
 
 def home(request):
@@ -145,3 +150,10 @@ def pedido_personalizado(request):
             )
         return redirect("pedido_creado", token=pedido.token_seguimiento)
     return render(request, "pedido_personalizado.html")
+
+class InsumoViewSet(viewsets.ModelViewSet):
+    queryset = Insumo.objects.all()
+    serializer_class = InsumoSerializer
+
+
+
