@@ -24,8 +24,6 @@ urllib3==2.2.3
 whitenoise==6.11.0
 zope.interface==7.1.1
 
-# LIBRERÍA ÚNICA PARA RUT (La que funciona)
-rut-chile==2.0.1
 
 # CIENCIA DE DATOS (Sin versión para que se adapten a Python 3.13)
 numpy
