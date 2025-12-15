@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
-# exit on error
 set -o errexit
 
 pip install -r requirements.txt
-
-# Recolectar archivos estáticos (CSS, JS, imágenes del admin)
 python manage.py collectstatic --no-input
-
-# Aplicar migraciones a la base de datos
 python manage.py migrate
+
+# Ejecutar el script de creación de usuario
+python create_superuser.py
