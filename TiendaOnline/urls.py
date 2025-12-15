@@ -12,8 +12,6 @@ router = DefaultRouter()
 router.register(r'insumos', InsumoViewSet, basename='insumo')
 router.register(r'pedidos', PedidoViewSet, basename='pedido')
 
-urlpatterns = router.urls
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home, name='home'),
