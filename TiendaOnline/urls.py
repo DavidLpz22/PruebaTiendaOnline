@@ -10,7 +10,7 @@ from mainApp.views import InsumoViewSet, PedidoViewSet, PedidoFiltroAPIView
 
 router = DefaultRouter()
 router.register(r'insumos', InsumoViewSet, basename='insumo')
-router.register(r'pedidos', InsumoViewSet, basename='pedido')
+router.register(r'pedidos', PedidoViewSet, basename='pedido')
 
 urlpatterns = router.urls
 
