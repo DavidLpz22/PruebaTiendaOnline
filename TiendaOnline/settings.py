@@ -77,14 +77,19 @@ WSGI_APPLICATION = 'TiendaOnline.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Configuración por defecto (usualmente SQLite para desarrollo local)
 DATABASES = {
-    'default': dj_database_url.config(
-        # Busca la variable DATABASE_URL, si no la encuentra, usa SQLite (local)
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
+# Configuración para Producción (PostgreSQL)
+# Esto busca la variable 'DATABASE_URL'. Si existe (como en Render), la usa.
+# Si no existe (como en tu PC), sigue usando la 'default' de arriba (SQLite).
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
