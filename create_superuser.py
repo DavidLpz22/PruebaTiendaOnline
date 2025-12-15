@@ -2,7 +2,7 @@ import os
 import django
 from django.contrib.auth import get_user_model
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nombre_de_tu_proyecto.settings") # CAMBIA ESTO por el nombre de tu carpeta de settings
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TiendaOnline") # CAMBIA ESTO por el nombre de tu carpeta de settings
 django.setup()
 
 User = get_user_model()
