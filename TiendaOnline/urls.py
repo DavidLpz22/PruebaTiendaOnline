@@ -1,9 +1,9 @@
-
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path # <--- Agregado re_path
 from mainApp import views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.static import serve # <--- Agregado serve
 
 from rest_framework.routers import DefaultRouter
 from mainApp.views import InsumoViewSet, PedidoViewSet, PedidoFiltroAPIView
@@ -26,5 +26,9 @@ urlpatterns = [
     path("logout/", views.logout_admin, name="logout_admin"),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Esto fuerza a Django a servir las imágenes incluso en producción (Render)
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
+]
